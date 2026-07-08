@@ -1,2 +1,2 @@
 # IIT Mandi SDAI Mini Project
-AI Pair Programmed REST API Endpoints
+AI Pair Programmed REST API Endpoint
