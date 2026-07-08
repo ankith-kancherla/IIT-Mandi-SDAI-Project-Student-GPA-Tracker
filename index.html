@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Grade Tracker</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e3a5f, #0f172a);
+      padding: 30px 40px;
+      border-bottom: 1px solid #1e40af;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      color: #60a5fa;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      color: #94a3b8;
+      margin-top: 5px;
+      font-size: 0.95rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #1e40af;
+      color: #bfdbfe;
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-top: 8px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 28px;
+      border: 1px solid #334155;
+    }
+
+    .card h2 {
+      font-size: 1.1rem;
+      color: #60a5fa;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 14px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #3b82f6;
+    }
+
+    input::placeholder { color: #475569; }
+
+    label {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    button {
+      width: 100%;
+      padding: 11px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+
+    button:hover { background: #1d4ed8; }
+
+    .btn-danger {
+      background: #dc2626;
+      margin-top: 8px;
+    }
+
+    .btn-danger:hover { background: #b91c1c; }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    .student-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .student-info h3 {
+      font-size: 1rem;
+      color: #e2e8f0;
+    }
+
+    .student-info p {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 3px;
+    }
+
+    .gpa-badge {
+      background: #064e3b;
+      color: #6ee7b7;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .gpa-badge.low {
+      background: #7f1d1d;
+      color: #fca5a5;
+    }
+
+    .gpa-badge.mid {
+      background: #78350f;
+      color: #fcd34d;
+    }
+
+    .msg {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-top: 14px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .msg.success { background: #064e3b; color: #6ee7b7; display: block; }
+    .msg.error   { background: #7f1d1d; color: #fca5a5; display: block; }
+
+    .empty {
+      text-align: center;
+      color: #475569;
+      padding: 40px 0;
+      font-size: 0.95rem;
+    }
+
+    .delete-btn {
+      background: none;
+      border: 1px solid #dc2626;
+      color: #dc2626;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      width: auto;
+      margin-top: 0;
+      transition: all 0.2s;
+    }
+
+    .delete-btn:hover {
+      background: #dc2626;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>📊 Student Grade Tracker</h1>
+  <p>AI Pair-Programmed REST API Project — SDE AI, IIT Mandi</p>
+  <span class="badge">Built with FastAPI + Python</span>
+</header>
+
+<div class="container">
+
+  <!-- Add Student -->
+  <div class="card">
+    <h2>➕ Add Student</h2>
+    <label>Student Name</label>
+    <input id="name" placeholder="e.g. Rahul Sharma" />
+    <label>Subject</label>
+    <input id="subject" placeholder="e.g. Mathematics" />
+    <label>Grades (comma separated)</label>
+    <input id="grades" placeholder="e.g. 85, 90, 78, 92" />
+    <button onclick="addStudent()">Add Student</button>
+    <div id="addMsg" class="msg"></div>
+  </div>
+
+  <!-- Get by ID -->
+  <div class="card">
+    <h2>🔍 Search Student by ID</h2>
+    <label>Student ID</label>
+    <input id="searchId" placeholder="e.g. 1" type="number" />
+    <button onclick="getStudent()">Search</button>
+    <div id="searchResult" style="margin-top:16px;"></div>
+  </div>
+
+  <!-- All Students -->
+  <div class="card full-width">
+    <h2>👥 All Students <span style="color:#475569;font-size:0.85rem;font-weight:400;margin-left:8px;" id="count"></span></h2>
+    <div id="studentsList"><div class="empty">No students yet. Add one above!</div></div>
+    <button onclick="loadStudents()" style="margin-top:16px;background:#1e293b;border:1px solid #334155;">🔄 Refresh</button>
+  </div>
+
+</div>
+
+<script>
+  const API = "http://127.0.0.1:8000";
+
+  function showMsg(id, text, type) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = `msg ${type}`;
+    setTimeout(() => el.className = 'msg', 3000);
+  }
+
+  function getGPAClass(gpa) {
+    if (gpa >= 80) return '';
+    if (gpa >= 60) return 'mid';
+    return 'low';
+  }
+
+  async function addStudent() {
+    const name = document.getElementById('name').value.trim();
+    const subject = document.getElementById('subject').value.trim();
+    const gradesRaw = document.getElementById('grades').value.trim();
+
+    if (!name || !subject || !gradesRaw) {
+      showMsg('addMsg', 'Please fill in all fields!', 'error');
+      return;
+    }
+
+    const grades = gradesRaw.split(',').map(g => parseFloat(g.trim())).filter(g => !isNaN(g));
+
+    if (grades.length === 0) {
+      showMsg('addMsg', 'Please enter valid grades!', 'error');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/students`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, subject, grades })
+      });
+      const data = await res.json();
+      showMsg('addMsg', `✅ ${data.name} added! GPA: ${data.gpa}`, 'success');
+      document.getElementById('name').value = '';
+      document.getElementById('subject').value = '';
+      document.getElementById('grades').value = '';
+      loadStudents();
+    } catch {
+      showMsg('addMsg', 'Error connecting to API!', 'error');
+    }
+  }
+
+  async function getStudent() {
+    const id = document.getElementById('searchId').value;
+    if (!id) return;
+    try {
+      const res = await fetch(`${API}/students/${id}`);
+      const data = await res.json();
+      if (res.ok) {
+        document.getElementById('searchResult').innerHTML = `
+          <div class="student-card">
+            <div class="student-info">
+              <h3>${data.name}</h3>
+              <p>${data.subject} • Grades: ${data.grades.join(', ')}</p>
+            </div>
+            <span class="gpa-badge ${getGPAClass(data.gpa)}">${data.gpa}</span>
+          </div>`;
+      } else {
+        document.getElementById('searchResult').innerHTML = `<div class="msg error" style="display:block">Student not found!</div>`;
+      }
+    } catch {
+      document.getElementById('searchResult').innerHTML = `<div class="msg error" style="display:block">Error connecting to API!</div>`;
+    }
+  }
+
+  async function deleteStudent(id, name) {
+    if (!confirm(`Delete ${name}?`)) return;
+    try {
+      await fetch(`${API}/students/${id}`, { method: 'DELETE' });
+      loadStudents();
+    } catch {
+      alert('Error deleting student!');
+    }
+  }
+
+  async function loadStudents() {
+    try {
+      const res = await fetch(`${API}/students`);
+      const data = await res.json();
+      const count = document.getElementById('count');
+      const list = document.getElementById('studentsList');
+      count.textContent = `(${data.length} students)`;
+      if (data.length === 0) {
+        list.innerHTML = '<div class="empty">No students yet. Add one above!</div>';
+        return;
+      }
+      list.innerHTML = data.map(s => `
+        <div class="student-card">
+          <div class="student-info">
+            <h3>${s.name} <span style="color:#475569;font-size:0.8rem">#${s.id}</span></h3>
+            <p>${s.subject} • Grades: ${s.grades.join(', ')}</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <span class="gpa-badge ${getGPAClass(s.gpa)}">${s.gpa}</span>
+            <button class="delete-btn" onclick="deleteStudent(${s.id}, '${s.name}')">Delete</button>
+          </div>
+        </div>`).join('');
+    } catch {
+      document.getElementById('studentsList').innerHTML = '<div class="empty">Could not connect to API.</div>';
+    }
+  }
+
+  loadStudents();
+</script>
+</body>
+</html>
